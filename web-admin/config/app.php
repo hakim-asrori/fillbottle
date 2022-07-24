@@ -175,7 +175,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        Barryvdh\DomPDF\ServiceProvider::class,
         App\Providers\GeneralServiceProvider::class,
 
     ],
@@ -231,7 +231,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'General' => App\Helpers\General::class,
-
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
 ];

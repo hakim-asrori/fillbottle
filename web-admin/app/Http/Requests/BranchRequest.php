@@ -23,6 +23,14 @@ class BranchRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->get('id');
+        if ($this->method() == 'PUT') {
+            $email = 'required|unique:branches,email,' . $id;
+            $telp = 'required|unique:branches,telp,' . $id;
+        } else {
+            $email = 'required|unique:branches,email,NULL';
+            $telp = 'required|unique:branches,telp,NULL';
+        }
         return [
             'nama' => 'required',
             'pimpinan' => 'required',
@@ -30,8 +38,8 @@ class BranchRequest extends FormRequest
             'kota' => 'required',
             'provinsi' => 'required',
             'kodepos' => 'required',
-            'email' => 'required',
-            'telp' => 'required'
+            'email' => $email,
+            'telp' => $telp
         ];
     }
 }

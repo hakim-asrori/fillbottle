@@ -23,7 +23,6 @@ class CreateKurirsTable extends Migration
             $table->string('kota');
             $table->string('provinsi');
             $table->string('kodepos');
-            $table->string('telp');
             $table->char('status',1)->nullable();
             $table->timestamps();
 

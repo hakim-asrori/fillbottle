@@ -34,8 +34,8 @@ class PartnerRequest extends FormRequest
             'kota' => 'required',
             'provinsi' => 'required',
             'kodepos' => 'required',
-            'email' => 'required',
-            'telp' => 'required',
+            'email' => 'required|email|unique:partners,email',
+            'telp' => 'required|unique:partners,telp',
             'logo' => $logo
         ];
     }

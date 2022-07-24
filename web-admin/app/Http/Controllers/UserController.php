@@ -71,9 +71,9 @@ class UserController extends Controller
 
 
         if ($saved) {
-            Session::flash('success', 'User has been saved');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'User could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
         return redirect('admin/user');
     }
@@ -141,15 +141,10 @@ class UserController extends Controller
                 return true;
             });
         }
-
-
-
-
-
         if ($saved) {
-            Session::flash('success', 'User has been update');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'User could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
         return redirect('admin/user');
     }
@@ -164,7 +159,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         if ($user->delete()) {
-            Session::flash('success', 'User has been delete');
+            Session::flash('success', 'Data Berhasil Dihapus');
         }
         return redirect('admin/user');
     }

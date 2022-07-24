@@ -7,7 +7,6 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Category;
 use App\Models\Partner;
 use App\Models\Product;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -64,18 +63,7 @@ class ProductController extends Controller
             $params = $request->except('_token');
 
             if ($request->has('foto')) {
-                $dt = new DateTime();
-
-                $path = public_path('uploads/images/' . $dt->format('Y-m-d'));
-                if (!File::isDirectory($path)) {
-                    File::makeDirectory($path, 0777, true, true);
-                }
-                $file = $request->file('foto');
-                $name =  Str::slug($params['nama']) . '_' . time();
-                $fileName = $name . '.' . $file->getClientOriginalExtension();
-                $folder = '/uploads/images/' . $dt->format('Y-m-d');
-                $filePath = $file->storeAs($folder, $fileName, 'public');
-                $params['foto'] = $filePath;
+                $params['foto'] = $this->simpanImage('foto', $request->file('foto'), $params['kode']);
             }
 
             $saved = false;
@@ -86,9 +74,9 @@ class ProductController extends Controller
             });
 
             if ($saved) {
-                Session::flash('success', 'Product has been saved');
+                Session::flash('success', 'Data Berhasil Disimpan');
             } else {
-                Session::flash('error', 'Product could not be saved');
+                Session::flash('error', 'Data Gagal Disimpan');
             }
         } catch (QueryException $e) {
             Session::flash('error', "Product could not be saved : SQL Error");
@@ -146,17 +134,7 @@ class ProductController extends Controller
 
         $params = $request->except('_token');
         if ($request->has('foto')) {
-            $dt = new DateTime();
-            $path = public_path('uploads/images/' . $dt->format('Y-m-d'));
-            if (!File::isDirectory($path)) {
-                File::makeDirectory($path, 0777, true, true);
-            }
-            $file = $request->file('foto');
-            $name =  Str::slug($params['nama']) . '_' . time();
-            $fileName = $name . '.' . $file->getClientOriginalExtension();
-            $folder = '/uploads/images/' . $dt->format('Y-m-d');
-            $filePath = $file->storeAs($folder, $fileName, 'public');
-            $params['foto'] = $filePath;
+            $params['foto'] = $this->simpanImage('foto', $request->file('foto'), $params['kode']);
         } else {
             $params = $request->except('foto');
         }
@@ -170,9 +148,9 @@ class ProductController extends Controller
         });
 
         if ($saved) {
-            Session::flash('success', 'Product has been updated');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'Product could not be update');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
 
         return redirect('admin/product');
@@ -187,9 +165,40 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
+        $url = $product->foto;
+        $dir = public_path('storage/' . substr($url, 0, strrpos($url, '/')));
+        
+        $path = public_path('storage/' . $url);
+
+        File::delete($path);
+
+        rmdir($dir);
         if ($product->delete()) {
-            Session::flash('success', 'Product has been delete');
+            Session::flash('success', 'Data Berhasil Dihapus');
         }
         return redirect('admin/product');
+    }
+
+    private function simpanImage($type, $foto, $nama)
+    {
+        $dt = new DateTime();
+
+        $path = public_path('storage/uploads/images/' . $dt->format('Y-m-d') . '/' . $nama);
+        if (!File::isDirectory($path)) {
+            File::makeDirectory($path, 0755, true, true);
+        }
+        $file = $foto;
+        $name =  $type . '_' . $dt->format('Y-m-d');
+        $fileName = $name . '.' . $file->getClientOriginalExtension();
+        $folder = '/uploads/images/' . $dt->format('Y-m-d') . '/' . $nama;
+
+        $check = public_path($folder) . $fileName;
+
+        if (File::exists($check)) {
+            File::delete($check);
+        }
+
+        $filePath = $file->storeAs($folder, $fileName, 'public');
+        return $filePath;
     }
 }

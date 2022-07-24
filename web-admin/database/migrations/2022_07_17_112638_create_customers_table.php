@@ -21,9 +21,8 @@ return new class extends Migration
             $table->string('kota');
             $table->string('provinsi');
             $table->string('kodepos');
-            $table->string('telp');
             $table->timestamps();
-
+            
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CustomerRequest;
-use App\Models\Branch;
 use App\Models\Customer;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Nette\Utils\DateTime;
 
 class CustomerController extends Controller
@@ -21,8 +21,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = customer::select(DB::raw('customers.*,users.name,users.last_name,users.email'))
-            ->join('users', 'users.id', 'customers.user_id')->where('users.level', '3')->orderBy('users.name', 'ASC');
+        $customers = User::with('customer')->where('level', '3')->orderBy('name', 'ASC');
         $this->data['customers'] = $customers->paginate(10);
         return view('admin.customer.index', $this->data);
     }
@@ -51,7 +50,7 @@ class CustomerController extends Controller
         $params['level'] = '3';
 
         if ($request->has('foto')) {
-            $params['foto'] = $this->simpanImage('foto', $request->file('foto'), $params['name']);
+            $params['foto'] = $this->simpanImage('foto', $request->file('foto'), $params['kode']);
         }
 
         $saved = false;
@@ -63,9 +62,9 @@ class CustomerController extends Controller
         });
 
         if ($saved) {
-            Session::flash('success', 'Customer has been saved');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'Customer could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
         return redirect('admin/customer');
     }
@@ -89,8 +88,8 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        $customer = customer::select(DB::raw('customers.*,users.name,users.last_name,users.email'))
-            ->join('users', 'users.id', 'customers.user_id')->where('customers.id', $id)->first();
+        $customer = User::select(DB::raw('users.*,customers.foto, customers.alamat, customers.kota, customers.provinsi, customers.kodepos'))
+            ->join('customers', 'customers.user_id', 'users.id')->where('users.id', $id)->first();
         $this->data['customer'] = $customer;
         return view('admin.customer.form', $this->data);
     }
@@ -107,11 +106,11 @@ class CustomerController extends Controller
         $foto = false;
         $pass = false;
 
-        $customer = Customer::findOrFail($id);
+        $user = User::findOrFail($id);
         $params = $request->except('_token');
 
-        $k = array('_token', 'alamat', 'kota', 'provinsi', 'kodepos', 'telp', 'foto');
-        $u = array('_token', 'name', 'last_name', 'email', 'level', 'branch_id', 'password');
+        $k = array('_token', 'alamat', 'kota', 'provinsi', 'kodepos', 'foto');
+        $u = array('_token', '_method', 'name', 'last_name', 'email', 'level', 'telp', 'password', 'kode');
 
         if ($request->filled('password')) {
             $pass = true;
@@ -131,23 +130,23 @@ class CustomerController extends Controller
             $params['password'] = Hash::make($request->password);
         }
         if ($foto) {
-            $params2['foto'] = $this->simpanImage('foto', $request->file('foto'), $params['name']);
+            $params2['foto'] = $this->simpanImage('foto', $request->file('foto'), $params['kode']);
         }
 
         $params['level'] = '3';
 
         $saved = false;
-        $saved = DB::transaction(function () use ($customer, $params, $params2) {
-            $customer->update($params2);
-            $user = User::findOrFail($customer->user_id);
+        $saved = DB::transaction(function () use ($user, $params, $params2) {
             $user->update($params);
+            $customer = Customer::where('user_id', $user->id);
+            $customer->update($params2);
             return true;
         });
 
         if ($saved) {
-            Session::flash('success', 'customer has been saved');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'customer could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
         return redirect('admin/customer');
     }
@@ -161,8 +160,15 @@ class CustomerController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
+        $url = $user->customer->foto;
+        $dir = public_path('storage/' . substr($url, 0, strrpos($url, '/')));        
+        $path = public_path('storage/' . $url);
+
+        File::delete($path);
+
+        rmdir($dir);
         if ($user->delete()) {
-            Session::flash('success', 'customer has been delete');
+            Session::flash('success', 'Data Berhasil Dihapus ');
         }
         return redirect('admin/customer');
     }
@@ -171,14 +177,21 @@ class CustomerController extends Controller
     {
         $dt = new DateTime();
 
-        $path = public_path('uploads/customer/' . $dt->format('Y-m-d') . '/' . $nama);
+        $path = public_path('storage/uploads/customer/' . $dt->format('Y-m-d') . '/' . $nama);
         if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0777, true, true);
+            File::makeDirectory($path, 0755, true, true);
         }
         $file = $foto;
-        $name =  $type . '_' . time();
+        $name =  $type . '_' . $dt->format('Y-m-d');
         $fileName = $name . '.' . $file->getClientOriginalExtension();
         $folder = '/uploads/customer/' . $dt->format('Y-m-d') . '/' . $nama;
+
+        $check = public_path($folder) . $fileName;
+
+        if (File::exists($check)) {
+            File::delete($check);
+        }
+
         $filePath = $file->storeAs($folder, $fileName, 'public');
         return $filePath;
     }

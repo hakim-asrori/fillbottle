@@ -45,23 +45,12 @@ class PartnerController extends Controller
     {
         $params = $request->except('_token');
         if ($request->has('logo')) {
-            $dt = new DateTime();
-
-            $path = public_path('uploads/logo/' . $dt->format('Y-m-d'));
-            if (!File::isDirectory($path)) {
-                File::makeDirectory($path, 0777, true, true);
-            }
-            $file = $request->file('logo');
-            $name =  Str::slug($params['nama']) . '_' . time();
-            $fileName = $name . '.' . $file->getClientOriginalExtension();
-            $folder = '/uploads/logo/' . $dt->format('Y-m-d');
-            $filePath = $file->storeAs($folder, $fileName, 'public');
-            $params['logo'] = $filePath;
+            $params['logo'] = $this->simpanImage('logo', $request->file('logo'), $params['kode']);
         }
         if (Partner::create($params)) {
-            Session::flash('success', 'partner has been saved');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'partner could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
         return redirect('admin/partner');
     }
@@ -101,26 +90,16 @@ class PartnerController extends Controller
     {
         $params = $request->except('_token');
         if ($request->has('logo')) {
-            $dt = new DateTime();
-            $path = public_path('uploads/logo/' . $dt->format('Y-m-d'));
-            if (!File::isDirectory($path)) {
-                File::makeDirectory($path, 0777, true, true);
-            }
-            $file = $request->file('logo');
-            $name =  Str::slug($params['nama']) . '_' . time();
-            $fileName = $name . '.' . $file->getClientOriginalExtension();
-            $folder = '/uploads/logo/' . $dt->format('Y-m-d');
-            $filePath = $file->storeAs($folder, $fileName, 'public');
-            $params['logo'] = $filePath;
+            $params['logo'] = $this->simpanImage('logo', $request->file('logo'), $params['kode']);
         } else {
             $params = $request->except('logo');
         }
 
         $partner = Partner::findOrFail($id);
         if ($partner->update($params)) {
-            Session::flash('success', 'partner has been update');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'partner could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
         return redirect('admin/partner');
     }
@@ -134,9 +113,39 @@ class PartnerController extends Controller
     public function destroy($id)
     {
         $partner = Partner::findOrFail($id);
+        $url = $partner->logo;
+        $dir = public_path('storage/' . substr($url, 0, strrpos($url, '/')));
+        $path = public_path('storage/' . $url);
+
+        File::delete($path);
+
+        rmdir($dir);
         if ($partner->delete()) {
-            Session::flash('success', 'partner has been delete');
+            Session::flash('success', 'Data Berhasil Dihapus');
         }
         return redirect('admin/partner');
+    }
+
+    private function simpanImage($type, $foto, $nama)
+    {
+        $dt = new DateTime();
+
+        $path = public_path('storage/uploads/logo/' . $dt->format('Y-m-d') . '/' . $nama);
+        if (!File::isDirectory($path)) {
+            File::makeDirectory($path, 0755, true, true);
+        }
+        $file = $foto;
+        $name =  $type . '_' . $dt->format('Y-m-d');
+        $fileName = $name . '.' . $file->getClientOriginalExtension();
+        $folder = '/uploads/logo/' . $dt->format('Y-m-d') . '/' . $nama;
+
+        $check = public_path($folder) . $fileName;
+
+        if (File::exists($check)) {
+            File::delete($check);
+        }
+
+        $filePath = $file->storeAs($folder, $fileName, 'public');
+        return $filePath;
     }
 }

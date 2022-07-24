@@ -2,14 +2,14 @@
 
 @section('main-content')
 @php
-$formTitle = !empty($branch)?'Update':'New'
+$formTitle = !empty($branch)?'Edit':'Tambah'
 @endphp
 <div class="content">
     <div class="row">
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header">
-                    <h4 class="m-0 font-weight-bold text-primary">{{$formTitle}} Branch</h4>
+                    <h4 class="m-0 font-weight-bold text-primary">{{$formTitle}} Cabang</h4>
                 </div>
                 <div class="card-body">
                     @if(!empty($branch))
@@ -18,7 +18,7 @@ $formTitle = !empty($branch)?'Update':'New'
                     @else
                     {!! Form::open(['url' => 'admin/branch','method' => 'POST'])!!}
                     @endif
-                    <h6 class="heading-small text-muted mb-4">Branch information</h6>
+                    <h6 class="heading-small text-muted mb-4">Informasi Cabang</h6>
 
                     <div class="pl-lg-4">
                         <div class="form-group">
@@ -89,16 +89,16 @@ $formTitle = !empty($branch)?'Update':'New'
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     {!! Form::label('telp','Telephone') !!}
-                                    {!! Form::text('telp', null,['class' => 'form-control', 'placeholder' => 'Telephone']) !!}
-                                    @error('telp')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
+                                    {!! Form::text('telp', null,['class' => 'form-control','onkeypress'=>'return event.charCode >= 48 && event.charCode <=57' , 'placeholder'=> 'Telephone']) !!}
+                                        @error('telp')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                 </div>
                             </div>
                         </div>
                         <div class="form-footer pt-3 border-top">
-                            <button type="submit" class="btn btn-primary btn-default">Save</button>
-                            <a href="{{ route('branch.index') }}" class="btn btn-secondary btn-default">Back</a>
+                            <button type="submit" class="btn btn-primary btn-default">Simpan</button>
+                            <a href="{{ route('branch.index') }}" class="btn btn-secondary btn-default">Kembali</a>
                         </div>
                         {!!Form::close()!!}
                     </div>

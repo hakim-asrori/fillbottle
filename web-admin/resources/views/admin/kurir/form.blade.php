@@ -2,7 +2,7 @@
 
 @section('main-content')
 @php
-$formTitle = !empty($kurir)?'Update':'New';
+$formTitle = !empty($kurir)?'Edit':'Tambah';
 $foto = !empty($kurir)? $kurir->foto:"";
 @endphp
 <div class="content">
@@ -20,13 +20,13 @@ $foto = !empty($kurir)? $kurir->foto:"";
                     @else
                     {!! Form::open(['url' => 'admin/kurir','method' => 'POST','enctype' => 'multipart/form-data'])!!}
                     @endif
-                    <h6 class="heading-small text-muted mb-4">Photo Profile</h6>
+                    <h6 class="heading-small text-muted mb-4">Foto Profil</h6>
                     <div class="pl-lg-4">
                         <div class="card card-default mb-4">
                             <div class="card-profile-image mt-4">
                                 <div id="preview-kurir">
                                     @if($foto!="")
-                                    <img src="{{ asset('storage/'.$foto) }}" width="200px" height="200px" />
+                                    <img src="{{ asset('storage/'.$foto) }}" width="200px" height="300px" />
                                     @endif
 
                                 </div>
@@ -46,10 +46,17 @@ $foto = !empty($kurir)? $kurir->foto:"";
                             </div>
                         </div>
                     </div>
-                    <h6 class="heading-small text-muted mb-4">Kurir information</h6>
+                    <h6 class="heading-small text-muted mb-4">Infomrasi Kurir</h6>
 
                     <div class="pl-lg-4">
-
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                {!! Form::hidden('kode',!empty($kurir) ? $kurir->kode : time() ,['class' =>'form-control','placeholder'=>'Kode'])!!}
+                                @error('kode')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-group">
@@ -124,10 +131,10 @@ $foto = !empty($kurir)? $kurir->foto:"";
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     {!! Form::label('telp','Telephone') !!}
-                                    {!! Form::text('telp',null,['class' => 'form-control', 'placeholder' => 'Telephone']) !!}
-                                    @error('telp')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
+                                    {!! Form::text('telp',null,['class' => 'form-control', 'onkeypress'=>'return event.charCode >= 48 && event.charCode <=57' ,'placeholder'=> 'Telephone']) !!}
+                                        @error('telp')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                 </div>
                             </div>
                         </div>
@@ -138,12 +145,13 @@ $foto = !empty($kurir)? $kurir->foto:"";
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
+                        @if(Auth::user()->level == 0)
                         <div class="form-group">
-                            {!! Form::label('branch_id', 'Branch') !!}
+                            {!! Form::label('branch_id', 'Cabang') !!}
                             {!! General::selectMultiLevel2('branch_id', $branches, [
                             'class' => 'form-control',
                             'selected' => empty($branchID) ? "" : $branchID,
-                            'placeholder' => '-- Choose Branch --']) !!}
+                            'placeholder' => '-- Pilih Cabang --']) !!}
                             @if(empty($branches))
                             <span class="text-danger">Data Kosong, Admin Belum Memasukkan Data</span>
                             @endif
@@ -151,6 +159,7 @@ $foto = !empty($kurir)? $kurir->foto:"";
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
+                        @endif
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-group">
@@ -172,8 +181,8 @@ $foto = !empty($kurir)? $kurir->foto:"";
                             </div>
                         </div>
                         <div class="form-footer pt-3 border-top">
-                            <button type="submit" class="btn btn-primary btn-default">Save</button>
-                            <a href="{{ route('kurir.index') }}" class="btn btn-secondary btn-default">Back</a>
+                            <button type="submit" class="btn btn-primary btn-default">Simpan</button>
+                            <a href="{{ route('kurir.index') }}" class="btn btn-secondary btn-default">Kembali</a>
                         </div>
                         {!!Form::close()!!}
                     </div>

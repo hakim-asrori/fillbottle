@@ -7,7 +7,10 @@ use App\Http\Requests\stockRequest;
 use App\Models\Branch;
 use App\Models\Product;
 use App\Models\Stock;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class StockController extends Controller
@@ -24,15 +27,19 @@ class StockController extends Controller
      */
     public function index(Request $request)
     {
-        $stocks = Stock::orderBy('product_id', 'ASC');
-        if ($id = $request->query('id')) {
+        $id = $request->query('id');
+        if (Auth::user()->level == 0) {
             $stocks = Stock::where("branch_id", "=", $id)->orderBy('product_id', 'ASC');
             $branch = Branch::where("id", '=', $id)->value('nama');
-
-            $this->data['bname'] = $branch;
-            $this->data['bid'] = $id;
+            $bid = $id;
+        } else {
+            $bid = User::join('user_branches', 'user_branches.user_id', 'users.id')->where('users.id', $id)->value('user_branches.branch_id');
+            $stocks = Stock::where("branch_id", "=", $bid)->orderBy('product_id', 'ASC');
+            $branch = Branch::where("id", '=', $bid)->value('nama');
         }
 
+        $this->data['bname'] = $branch;
+        $this->data['bid'] = $bid;
         $this->data['stocks'] = $stocks->paginate(10);
         return view('admin.stock.index', $this->data);
     }
@@ -65,11 +72,16 @@ class StockController extends Controller
         $params = $request->except('_token');
         $params['branch_id'] = $request->input('branch_id');
         if (Stock::create($params)) {
-            Session::flash('success', 'Stock has been saved');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'Stock could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
-        return redirect('admin/stock?id=' . $request->input('branch_id'));
+        if (Auth::user()->level == 0) {
+            $bid = $request->input('branch_id');
+        } else {
+            $bid = Auth::user()->id;
+        }
+        return redirect('admin/stock?id=' . $bid);
     }
 
     /**
@@ -114,11 +126,17 @@ class StockController extends Controller
         $stock = Stock::findOrFail($id);
         $this->data['bid'] = $stock->branch_id;
         if ($stock->update($params)) {
-            Session::flash('success', 'Stock has been update');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'Stock could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
-        return redirect('admin/stock?id=' . $this->data['bid']);
+
+        if (Auth::user()->level == 0) {
+            $bid = $stock->branch_id;
+        } else {
+            $bid = Auth::user()->id;
+        }
+        return redirect('admin/stock?id=' . $bid);
     }
 
     /**
@@ -132,8 +150,14 @@ class StockController extends Controller
         $stock = Stock::findOrFail($id);
         $this->data['bid'] = $stock->branch_id;
         if ($stock->delete()) {
-            Session::flash('success', 'Stock has been delete');
+            Session::flash('success', 'Data Berhasil Dihapus');
         }
-        return redirect('admin/stock?id=' . $this->data['bid']);
+
+        if (Auth::user()->level == 0) {
+            $bid = $stock->branch_id;
+        } else {
+            $bid = Auth::user()->id;
+        }
+        return redirect('admin/stock?id=' . $bid);
     }
 }

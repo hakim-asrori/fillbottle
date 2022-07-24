@@ -21,8 +21,8 @@ class CreateBranchesTable extends Migration
             $table->string('kota');
             $table->string('provinsi');
             $table->string('kodepos');
-            $table->string('telp');
-            $table->string('email');
+            $table->string('telp')->unique();
+            $table->string('email')->unique();
             $table->timestamps();
         });
     }

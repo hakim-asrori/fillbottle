@@ -4,47 +4,48 @@
 <div class="content">
     <div class="row">
         <div class="col-lg-12">
-            <div class="card card-default">
+            <div class="card shadow mb-4">
                 <div class="card-header">
-                    <h4 class="m-0 font-weight-bold text-primary">Product</h4>
+                    <h4 class="m-0 font-weight-bold text-primary">Produk</h4>
+                </div>
+                <div class="container text-right">
+                    <a href="{{ route('product.create') }}" class="btn btn-primary mt-3">Tambah Data</a>
+                    <a href="{{ route('cetak.product') }}" class="btn btn-primary mt-3">Cetak PDF</a>
                 </div>
                 <div class="card-body">
                     @include('layouts.components.flash')
                     <table class="table table-bordered table-stripped">
                         <thead>
-                            <th>No</th>
-                            <th>Image</th>
+                            <th>#</th>
                             <th>Kode</th>
                             <th>Nama</th>
-                            <th>Action</th>
+                            <th>Mitra</th>
+                            <th>Aksi</th>
                         </thead>
                         <tbody>
                             @forelse ($products as $product)
                             <tr>
                                 <td scope="row">{{ $loop->iteration }}</td>
-                                <td><img src="{{ asset('storage/'.$product->foto) }}" style="width:150px; height: 100px; border-radius: 0.35rem;" /></td>
                                 <td>{{ $product->kode }}</td>
                                 <td>{{ $product->nama }}</td>
+                                <td>{{$product->partner->nama}}</td>
                                 <td>
                                     <form action="{{ route('product.destroy',$product->id) }}" method="POST">
-                                        <a href="{{ route('product.edit',$product->id) }}" class="btn btn-sm btn-primary mr-2">Edit</a>
+                                        <a href="{{ route('product.edit',$product->id) }}" class="btn btn-sm btn-primary mx-1 my-1">Edit</a>
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</button>
+                                        <button type="submit" class="btn btn-danger btn-sm mx-1 my-1" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
                                     </form>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6">No records found</td>
+                                <td colspan="6">Data Tidak Ditemukan</td>
                             </tr>
                             @endforelse
                         </tbody>
                     </table>
                     {{ $products->links() }}
-                </div>
-                <div class="card-footer text-right">
-                    <a href="{{ route('product.create') }}" class="btn btn-primary">Add News</a>
                 </div>
             </div>
         </div>

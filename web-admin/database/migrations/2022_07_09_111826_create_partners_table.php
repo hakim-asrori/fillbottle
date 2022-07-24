@@ -15,13 +15,14 @@ return new class extends Migration
     {
         Schema::create('partners', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('kode')->nullable();
             $table->string('nama');
             $table->string('alamat');
             $table->string('kota');
             $table->string('provinsi');
             $table->string('kodepos');
-            $table->string('telp');
-            $table->string('email');
+            $table->string('telp')->unique();
+            $table->string('email')->unique();
             $table->string('logo');
             $table->timestamps();
         });

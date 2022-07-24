@@ -47,9 +47,9 @@ class CategoryController extends Controller
         $params = $request->except('_token');
         $params['parent_id'] = (int) $params['parent_id'];
         if (Category::create($params)) {
-            Session::flash('success', 'Category has been saved');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'Category could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
         return redirect('admin/category');
     }
@@ -93,9 +93,9 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($id);
         if ($category->update($params)) {
-            Session::flash('success', 'Category has been update');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'Category could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
         return redirect('admin/category');
     }
@@ -110,7 +110,7 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
         if ($category->delete()) {
-            Session::flash('success', 'Category has been delete');
+            Session::flash('success', 'Data Berhasil Dihapus');
         }
         return redirect('admin/category');
     }

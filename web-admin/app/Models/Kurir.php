@@ -9,7 +9,7 @@ class Kurir extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'ktp', 'sim', 'foto', 'status', 'alamat', 'kota', 'provinsi', 'kodepos', 'telp'];
+    protected $fillable = ['user_id', 'ktp', 'sim', 'foto', 'status', 'alamat', 'kota', 'provinsi', 'kodepos'];
 
     public function user()
     {

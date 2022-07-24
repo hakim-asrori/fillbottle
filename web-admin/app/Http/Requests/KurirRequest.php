@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class KurirRequest extends FormRequest
 {
@@ -23,28 +24,39 @@ class KurirRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->get('id');
         if ($this->method() == 'PUT') {
             $password = 'nullable|min:8';
             $foto = 'image|mimes:jpeg,png,jpg,gif|max:4096';
+            $email = 'required|unique:users,email,' . $id;
+            $telp = 'required|unique:users,telp,' . $id;
         } else {
             $password = 'required|min:8';
             $foto = 'required|image|mimes:jpeg,png,jpg,gif|max:4096';
+            $email = 'required|unique:users,email,NULL';
+            $telp = 'required|unique:users,telp,NULL';
+        }
+
+        if (Auth::user()->level == 0) {
+            $branch = 'required';
+        } else {
+            $branch = 'nullable';
         }
 
         return [
             'name' => 'required',
             'last_name' => 'required',
-            'email' => 'required|email',
+            'email' => $email,
             'password' => $password,
             'foto' => $foto,
-            'branch_id' => 'required',
+            'branch_id' => $branch,
             'ktp' => $foto,
             'sim' => $foto,
             'alamat' => 'required',
             'kota' => 'required',
             'provinsi' => 'required',
             'kodepos' => 'required',
-            'telp' => 'required'
+            'telp' => $telp
 
         ];
     }

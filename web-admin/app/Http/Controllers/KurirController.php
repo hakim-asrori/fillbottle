@@ -6,7 +6,7 @@ use App\Http\Requests\KurirRequest;
 use App\Models\Branch;
 use App\Models\Kurir;
 use App\User;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -22,9 +22,12 @@ class KurirController extends Controller
      */
     public function index()
     {
-        $kurirs = Kurir::select(DB::raw('kurirs.*,users.name,users.last_name,users.email'))
-            ->join('users', 'users.id', 'kurirs.user_id')->where('users.level', '2')->orderBy('users.name', 'ASC');
-        $this->data['kurirs'] = $kurirs->paginate(10);
+        if (Auth::user()->level == 0) {
+            $users = User::with('kurir')->where('level', '2')->orderBy('name', 'ASC');
+        } else {
+            $users = User::join('user_branches', 'user_branches.user_id', 'users.id')->where('users.level', '2')->orderBy('users.name', 'ASC');
+        }
+        $this->data['kurirs'] = $users->paginate(10);
         return view('admin.kurir.index', $this->data);
     }
 
@@ -56,28 +59,33 @@ class KurirController extends Controller
         $params['level'] = '2';
 
         if ($request->has('foto')) {
-            $params['foto'] = $this->simpanImage('foto', $request->file('foto'), $params['name']);
+            $params['foto'] = $this->simpanImage('foto', $request->file('foto'), $params['kode']);
         }
         if ($request->has('ktp')) {
-            $params['ktp'] = $this->simpanImage('ktp', $request->file('ktp'), $params['name']);
+            $params['ktp'] = $this->simpanImage('ktp', $request->file('ktp'), $params['kode']);
         }
         if ($request->has('sim')) {
-            $params['sim'] = $this->simpanImage('sim', $request->file('sim'), $params['name']);
+            $params['sim'] = $this->simpanImage('sim', $request->file('sim'), $params['kode']);
         }
 
         $saved = false;
         $saved = DB::transaction(function () use ($params) {
+            if (Auth::user()->level == 1) {
+                $bid = User::join('user_branches', 'user_branches.user_id', 'users.id')->where('users.id', Auth::user()->id)->value('branch_id');
+            } else {
+                $bid = $params['branch_id'];
+            }
             $user = User::create($params);
-            $user->branches()->sync($params['branch_id']);
+            $user->branches()->sync($bid);
             $params['user_id'] = $user->id;
             Kurir::create($params);
             return true;
         });
 
         if ($saved) {
-            Session::flash('success', 'Kurir has been saved');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'Kurir could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
         return redirect('admin/kurir');
     }
@@ -101,10 +109,10 @@ class KurirController extends Controller
      */
     public function edit($id)
     {
-        $kurir = Kurir::select(DB::raw('kurirs.*,users.name,users.last_name,users.email'))
-            ->join('users', 'users.id', 'kurirs.user_id')->where('kurirs.id', $id)->first();
-        $branch = User::join('user_branches', 'user_branches.user_id', '=', 'users.id')->where('users.id', $kurir->user_id)->value('branch_id');
-        $this->data['kurir'] = $kurir;
+        $user = User::select(DB::raw('users.*,kurirs.ktp, kurirs.sim, kurirs.foto, kurirs.status, kurirs.alamat, kurirs.kota, kurirs.provinsi, kurirs.kodepos'))
+            ->join('kurirs', 'kurirs.user_id', 'users.id')->where('users.id', $id)->first();
+        $branch = User::join('user_branches', 'user_branches.user_id', '=', 'users.id')->where('users.id', $id)->value('branch_id');
+        $this->data['kurir'] = $user;
 
         $branches = Branch::orderBy('nama', 'ASC')->get();
 
@@ -127,11 +135,11 @@ class KurirController extends Controller
         $sim = false;
         $pass = false;
 
-        $kurir = Kurir::findOrFail($id);
+        $user = User::findOrFail($id);
         $params = $request->except('_token');
 
-        $k = array('_token', 'alamat', 'kota', 'provinsi', 'kodepos', 'telp', 'foto', 'ktp', 'sim');
-        $u = array('_token', 'name', 'last_name', 'email', 'level', 'branch_id', 'password');
+        $k = array('_token', 'alamat', 'kota', 'provinsi', 'kodepos', 'foto', 'ktp', 'sim');
+        $u = array('_token', 'name', 'last_name', 'email', 'level', 'telp', 'branch_id', 'password');
 
         if ($request->filled('password')) {
             $pass = true;
@@ -161,30 +169,35 @@ class KurirController extends Controller
             $params['password'] = Hash::make($request->password);
         }
         if ($foto) {
-            $params2['foto'] = $this->simpanImage('foto', $request->file('foto'), $params['name']);
+            $params2['foto'] = $this->simpanImage('foto', $request->file('foto'), $params['kode']);
         }
         if ($ktp) {
-            $params2['ktp'] = $this->simpanImage('ktp', $request->file('ktp'), $params['name']);
+            $params2['ktp'] = $this->simpanImage('ktp', $request->file('ktp'), $params['kode']);
         }
         if ($sim) {
-            $params2['sim'] = $this->simpanImage('sim', $request->file('sim'), $params['name']);
+            $params2['sim'] = $this->simpanImage('sim', $request->file('sim'), $params['kode']);
         }
 
         $params['level'] = '2';
 
         $saved = false;
-        $saved = DB::transaction(function () use ($kurir, $params, $params2) {
-            $kurir->update($params2);
-            $user = User::findOrFail($kurir->user_id);
+        $saved = DB::transaction(function () use ($user, $params, $params2) {
+            if (Auth::user()->level == 1) {
+                $bid = User::join('user_branches', 'user_branches.user_id', 'users.id')->where('users.id', Auth::user()->id)->value('branch_id');
+            } else {
+                $bid = $params['branch_id'];
+            }
             $user->update($params);
-            $user->branches()->sync($params['branch_id']);
+            $user->branches()->sync($bid);
+            $kurir = Kurir::where('user_id', $user->id)->first();
+            $kurir->update($params2);
             return true;
         });
 
         if ($saved) {
-            Session::flash('success', 'Kurir has been saved');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'Kurir could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
         return redirect('admin/kurir');
     }
@@ -198,8 +211,20 @@ class KurirController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
+        $foto = $user->kurir->foto;
+        $ktp = $user->kurir->ktp;
+        $sim = $user->kurir->sim;
+        $path = public_path('storage/' . substr($foto, 0, strrpos($foto, '/')));
+        $foto = public_path('storage/' . $foto);
+        $ktp = public_path('storage/' . $ktp);
+        $sim = public_path('storage/' . $sim);
+
+        File::delete([$foto, $ktp, $sim]);
+
+        rmdir($path);
+
         if ($user->delete()) {
-            Session::flash('success', 'Kurir has been delete');
+            Session::flash('success', 'Data Berhasil Dihapus' . $path);
         }
         return redirect('admin/kurir');
     }
@@ -208,14 +233,21 @@ class KurirController extends Controller
     {
         $dt = new DateTime();
 
-        $path = public_path('uploads/kurir/' . $dt->format('Y-m-d') . '/' . $nama);
+        $path = public_path('storage/uploads/kurir/' . $dt->format('Y-m-d') . '/' . $nama);
         if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0777, true, true);
+            File::makeDirectory($path, 0755, true, true);
         }
         $file = $foto;
-        $name =  $type . '_' . time();
+        $name =  $type . '_' . $dt->format('Y-m-d');
         $fileName = $name . '.' . $file->getClientOriginalExtension();
         $folder = '/uploads/kurir/' . $dt->format('Y-m-d') . '/' . $nama;
+
+        $check = public_path($folder) . $fileName;
+
+        if (File::exists($check)) {
+            File::delete($check);
+        }
+
         $filePath = $file->storeAs($folder, $fileName, 'public');
         return $filePath;
     }

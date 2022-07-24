@@ -23,25 +23,30 @@ class CustomerRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->get('id');
         if ($this->method() == 'PUT') {
             $password = 'nullable|min:8';
             $foto = 'image|mimes:jpeg,png,jpg,gif|max:4096';
+            $email = 'required|unique:users,email,' . $id;
+            $telp = 'required|unique:users,telp,' . $id;
         } else {
             $password = 'required|min:8';
             $foto = 'required|image|mimes:jpeg,png,jpg,gif|max:4096';
+            $email = 'required|unique:users,email,NULL';
+            $telp = 'required|unique:users,telp,NULL';
         }
 
         return [
             'name' => 'required',
             'last_name' => 'required',
-            'email' => 'required|email',
+            'email' => $email,
             'password' => $password,
             'foto' => $foto,
             'alamat' => 'required',
             'kota' => 'required',
             'provinsi' => 'required',
             'kodepos' => 'required',
-            'telp' => 'required'
+            'telp' =>  $telp
 
         ];
     }

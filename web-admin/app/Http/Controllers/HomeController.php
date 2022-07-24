@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -26,11 +28,21 @@ class HomeController extends Controller
     {
         $users = User::count();
 
-        $widget = [
-            'users' => $users,
-            //...
-        ];
+        $level = Auth::user()->level;
+        $userid = Auth::user()->id;
+        if ($level == 0) {
+            $nama = "Admin";
+        } elseif ($level == 1) {
+            $branch = Branch::join('user_branches', 'user_branches.branch_id', 'branches.id')->where('user_branches.user_id', $userid)->value('branches.nama');
+            $nama = $branch;
+        }
+        $this->data['users'] = $users;
+        $this->data['nama'] = $nama;
+        return view('home', $this->data);
+    }
 
-        return view('home', compact('widget'));
+    public function notAdmin()
+    {
+        return view('notAdmin');
     }
 }

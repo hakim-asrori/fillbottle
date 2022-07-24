@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'last_name', 'email', 'password', 'level',
+        'name', 'last_name', 'email', 'password', 'level', 'telp','kode',
     ];
 
     /**
@@ -49,7 +49,7 @@ class User extends Authenticatable
     public static function levels()
     {
         return [
-            0 => 'Admin',
+            0 => 'Utama',
             1 => 'Cabang',
         ];
     }
@@ -64,9 +64,19 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\Kurir');
     }
 
-    public function getAlamatLengkapAttribute()
+    public function customer()
+    {
+        return $this->hasOne('App\Models\Customer');
+    }
+
+    public function getAlamatKurirAttribute()
     {
         return "{$this->kurir->alamat}, {$this->kurir->kota}, {$this->kurir->provinsi}, {$this->kurir->kodepos}";
+    }
+
+    public function getAlamatCustomerAttribute()
+    {
+        return "{$this->customer->alamat}, {$this->customer->kota}, {$this->customer->provinsi}, {$this->customer->kodepos}";
     }
 
     public function getLevelNameAttribute()

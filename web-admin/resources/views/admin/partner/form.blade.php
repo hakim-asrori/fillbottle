@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @php
-$formTitle = !empty($partner)?'Update':'New';
+$formTitle = !empty($partner)?'Edit':'Tambah';
 $logo = !empty($partner)?$partner->logo:"";
 @endphp
 @section('main-content')
@@ -11,7 +11,7 @@ $logo = !empty($partner)?$partner->logo:"";
         <div class="card shadow mb-4">
 
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{$formTitle}} Partner</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{$formTitle}} Mitra</h6>
             </div>
 
             <div class="card-body">
@@ -22,7 +22,7 @@ $logo = !empty($partner)?$partner->logo:"";
                 @else
                 {!! Form::open(['url' => 'admin/partner','method' => 'POST','enctype' => 'multipart/form-data']) !!}
                 @endif
-                <h6 class="heading-small text-muted mb-4">Partner Logo</h6>
+                <h6 class="heading-small text-muted mb-4">Logo Mitra</h6>
                 <div class="pl-lg-4">
                     <div class="card card-default mb-4">
                         <div class="card-logo-image mt-4">
@@ -49,10 +49,17 @@ $logo = !empty($partner)?$partner->logo:"";
                     </div>
                 </div>
 
-                <h6 class="heading-small text-muted mb-4">Partner information</h6>
+                <h6 class="heading-small text-muted mb-4">Informasi Mitra</h6>
 
                 <div class="pl-lg-4">
-
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            {!! Form::hidden('kode',!empty($partner) ? $partner->kode : time() ,['class' =>'form-control','placeholder'=>'Kode'])!!}
+                            @error('kode')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group">
@@ -119,17 +126,17 @@ $logo = !empty($partner)?$partner->logo:"";
                         <div class="col-lg-6">
                             <div class="form-group">
                                 {!! Form::label('telp','Telephone') !!}
-                                {!! Form::text('telp', null,['class' => 'form-control', 'placeholder' => 'Telephone']) !!}
-                                @error('telp')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                                {!! Form::text('telp', null,['class' => 'form-control', 'onkeypress'=>'return event.charCode >= 48 && event.charCode <=57' ,'placeholder'=> 'Telephone']) !!}
+                                    @error('telp')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                             </div>
                         </div>
                     </div>
 
                     <div class="form-footer pt-3 border-top">
-                        <button type="submit" class="btn btn-primary btn-default">Save</button>
-                        <a href="{{ route('partner.index') }}" class="btn btn-secondary btn-default">Back</a>
+                        <button type="submit" class="btn btn-primary btn-default">Simpan</button>
+                        <a href="{{ route('partner.index') }}" class="btn btn-secondary btn-default">Kembali</a>
                     </div>
                     {!! Form::close() !!}
                 </div>

@@ -17,7 +17,7 @@ class CreateCategoriesTable extends Migration
             $table->bigIncrements('id');
             $table->string('nama');
             $table->string('satuan');
-            $table->bigInteger('parent_id');
+            $table->bigInteger('parent_id')->default(0)->nullable();
             $table->timestamps();
         });
     }

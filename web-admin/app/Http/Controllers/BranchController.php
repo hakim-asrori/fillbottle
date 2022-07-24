@@ -42,9 +42,9 @@ class BranchController extends Controller
     {
         $params = $request->except('_token');
         if (branch::create($params)) {
-            Session::flash('success', 'Branch has been saved');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'Branch could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
         return redirect('admin/branch');
     }
@@ -86,9 +86,9 @@ class BranchController extends Controller
 
         $branch = Branch::findOrFail($id);
         if ($branch->update($params)) {
-            Session::flash('success', 'Branch has been update');
+            Session::flash('success', 'Data Berhasil Disimpan');
         } else {
-            Session::flash('error', 'Branch could not be saved');
+            Session::flash('error', 'Data Gagal Disimpan');
         }
         return redirect('admin/branch');
     }
@@ -103,7 +103,7 @@ class BranchController extends Controller
     {
         $branch = Branch::findOrFail($id);
         if ($branch->delete()) {
-            Session::flash('success', 'Branch has been delete');
+            Session::flash('success', 'Data Berhasil Dihapus');
         }
         return redirect('admin/branch');
     }

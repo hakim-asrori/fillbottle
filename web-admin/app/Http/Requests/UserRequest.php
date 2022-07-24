@@ -23,18 +23,24 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->get('id');
         if ($this->method() == 'PUT') {
             $password = 'nullable|min:8';
+            $email = 'required|unique:users,email,' . $id;
+            $telp = 'required|unique:users,telp,' . $id;
         } else {
             $password = 'required|min:8';
+            $email = 'required|unique:users,email,NULL';
+            $telp = 'required|unique:users,telp,NULL';
         }
 
         return [
             'name' => 'required',
             'last_name' => 'required',
-            'email' => 'required|email',
+            'email' => $email,
             'level' => 'required',
-            'password' => $password
+            'password' => $password,
+            'telp' => $telp
         ];
     }
 }

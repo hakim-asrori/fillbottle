@@ -2,7 +2,7 @@
 
 @section('main-content')
 @php
-$formTitle = !empty($customer)?'Update':'New';
+$formTitle = !empty($customer)?'Edit':'Tambah';
 $foto = !empty($customer)? $customer->foto:"";
 @endphp
 <div class="content">
@@ -10,7 +10,7 @@ $foto = !empty($customer)? $customer->foto:"";
         <div class="col-lg-9">
             <div class="card shadow mb-4">
                 <div class="card-header">
-                    <h4 class="m-0 font-weight-bold text-primary">{{$formTitle}} customer</h4>
+                    <h4 class="m-0 font-weight-bold text-primary">{{$formTitle}} Pelanggan</h4>
                 </div>
                 <div class="card-body">
                     @include('layouts.components.flash')
@@ -20,7 +20,7 @@ $foto = !empty($customer)? $customer->foto:"";
                     @else
                     {!! Form::open(['url' => 'admin/customer','method' => 'POST','enctype' => 'multipart/form-data'])!!}
                     @endif
-                    <h6 class="heading-small text-muted mb-4">Photo Profile</h6>
+                    <h6 class="heading-small text-muted mb-4">Foto Profil</h6>
                     <div class="pl-lg-4">
                         <div class="card card-default mb-4">
                             <div class="card-profile-image mt-4">
@@ -46,10 +46,17 @@ $foto = !empty($customer)? $customer->foto:"";
                             </div>
                         </div>
                     </div>
-                    <h6 class="heading-small text-muted mb-4">Customer information</h6>
+                    <h6 class="heading-small text-muted mb-4">Infomrasi Pelanggan</h6>
 
                     <div class="pl-lg-4">
-
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                {!! Form::hidden('kode',!empty($customer) ? $customer->kode : time() ,['class' =>'form-control','placeholder'=>'Kode'])!!}
+                                @error('kode')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-group">
@@ -124,10 +131,10 @@ $foto = !empty($customer)? $customer->foto:"";
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     {!! Form::label('telp','Telephone') !!}
-                                    {!! Form::text('telp',null,['class' => 'form-control', 'placeholder' => 'Telephone']) !!}
-                                    @error('telp')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
+                                    {!! Form::text('telp',null,['class' => 'form-control','onkeypress'=>'return event.charCode >= 48 && event.charCode <=57' , 'placeholder'=> 'Telephone']) !!}
+                                        @error('telp')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                 </div>
                             </div>
                         </div>
@@ -139,8 +146,8 @@ $foto = !empty($customer)? $customer->foto:"";
                             @enderror
                         </div>
                         <div class="form-footer pt-3 border-top">
-                            <button type="submit" class="btn btn-primary btn-default">Save</button>
-                            <a href="{{ route('customer.index') }}" class="btn btn-secondary btn-default">Back</a>
+                            <button type="submit" class="btn btn-primary btn-default">Simpan</button>
+                            <a href="{{ route('customer.index') }}" class="btn btn-secondary btn-default">Kembali</a>
                         </div>
                         {!!Form::close()!!}
                     </div>

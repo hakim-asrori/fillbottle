@@ -14,15 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Auth::routes();
+
 Route::get('/', function () {
     return view('pengunjung.welcome');
 });
 
-// Route::get('/home', 'HomeController@index')->name('home');
-
-
-
 Route::middleware(['auth', 'is_admin'])->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
     Route::resource('admin/user', UserController::class);
     Route::resource('admin/category', CategoryController::class);
     Route::resource('admin/product', ProductController::class);
@@ -53,6 +53,17 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     })->name('blank');
 });
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['auth', 'is_admin']);
+Route::group(
+    ['prefix' => 'api'],
+    function () {
+        Route::get('/product', 'ApiProductController@showAllProduct');
+        Route::get('/product/{id}', 'ApiProductController@showOneProduct');
+        Route::get('/productCategory/{id}', 'ApiProductController@showProductbyCategory');
+        Route::get('/category', 'ApiCategoryController@showAllCategory');
+        Route::get('/mainCategory', 'ApiCategoryController@showMainCategory');
+        Route::get('/subCategory/{id}', 'ApiCategoryController@showSubCategory');
+        Route::post('/login', 'ApiUserController@login');
+        Route::post('/kurir', 'ApiUserController@kurir');
+        Route::post('/customer', 'ApiUserController@customer');
+    }
+);

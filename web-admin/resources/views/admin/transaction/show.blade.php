@@ -4,10 +4,50 @@
 @php
 $branch_id = $bid;
 @endphp
-<div class="container-fluid">
+<div class="content">
     <div class="row">
-        <div class="col col-lg-8 col-md-8 mb-2">
-            <div class="card">
+        <div class="col col-lg-4 col-md-4 order-lg-2">
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">Ringkasan</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Kode</td>
+                                    <td>{{$transaction->kode}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Nama Pemesan</td>
+                                    <td>{{$transaction->nama}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Tanggal Pemesanan</td>
+                                    <td>{{$transaction->tanggal}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total</td>
+                                    <td>{{General::priceFormat($transaction->total,'Rp.')}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Metode Pembayaran</td>
+                                    <td>{{$transaction->metode_name}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Status Pemesanan</td>
+                                    <td>{{$transaction->status_name}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col col-lg-8 col-md-8 mb-2 order-lg-1">
+            <div class="card shadow mb-4">
                 <div class="card-header">
                     <h3 class="card-title">Item</h3>
                 </div>
@@ -25,20 +65,28 @@ $branch_id = $bid;
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach($items as $item)
                                 <tr>
-                                    <td>1</td>
-                                    <td>KATE-1</td>
-                                    <td>Baju Anak</td>
-                                    <td class="text-right">15.000</td>
-                                    <td class="text-right">2</td>
-                                    <td class="text-right">30.000</td>
+                                    <td scope="row">{{ $loop->iteration }}</td>
+                                    <td>{{$item->product->kode}}</td>
+                                    <td>{{$item->product->nama}}</td>
+                                    <td class="text-right">{{General::priceFormat($item->product->harga,'Rp.')}}</td>
+                                    <td class="text-right">{{$item->jumlah}}</td>
+                                    <td class="text-right">{{General::priceFormat($item->product->harga * $item->jumlah,'Rp.')}}</td>
                                 </tr>
+                                @endforeach
                                 <tr>
                                     <td colspan="5">
                                         <b>Total</b>
                                     </td>
+                                    @php
+                                    $subTotal = 0;
+                                    foreach($items as $item){
+                                    $subTotal = $subTotal + ($item->product->harga * $item->jumlah);
+                                    }
+                                    @endphp
                                     <td class="text-right">
-                                        <b>150.000</b>
+                                        <b>{{General::priceFormat($subTotal,'Rp.')}}</b>
                                     </td>
                                 </tr>
                             </tbody>
@@ -46,42 +94,7 @@ $branch_id = $bid;
                     </div>
                 </div>
                 <div class="card-footer">
-                    <a href="{{ route('transaction.index') }}" class="btn btn-sm btn-danger">Tutup</a>
-                </div>
-            </div>
-        </div>
-        <div class="col col-lg-4 col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Ringkasan</h3>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <tbody>
-                                <tr>
-                                    <td>Nama Pemesan</td>
-                                    <td>Hanya Contoh</td>
-                                </tr>
-                                <tr>
-                                    <td>Tanggal Pemesanan</td>
-                                    <td>01 Januari 2022</td>
-                                </tr>
-                                <tr>
-                                    <td>Total</td>
-                                    <td>100.000</td>
-                                </tr>
-                                <tr>
-                                    <td>Metode Pembayaran</td>
-                                    <td>COD</td>
-                                </tr>
-                                <tr>
-                                    <td>Status Pemesanan</td>
-                                    <td>Proses</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <a href="{{ route('transaction.index',array('id'=>$branch_id)) }}" class="btn btn-sm btn-danger">Tutup</a>
                 </div>
             </div>
         </div>

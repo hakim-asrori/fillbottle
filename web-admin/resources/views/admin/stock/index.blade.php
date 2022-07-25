@@ -19,36 +19,38 @@ $branch_name = $bname;
                 </div>
                 <div class="card-body">
                     @include('layouts.components.flash')
-                    <table class="table table-bordered table-stripped">
-                        <thead>
-                            <th>#</th>
-                            <th>Produk</th>
-                            <th>Stok</th>
-                            <th>Aksi</th>
-                        </thead>
-                        <tbody>
-                            @forelse($stocks as $stock)
-                            <tr>
-                                <td scope="row">{{ $loop->iteration }}</td>
-                                <td>{{$stock->product->nama}}</td>
-                                <td>{{$stock->stok}}</td>
-                                <td>
-                                    <form action="{{ route('stock.destroy',$stock->id) }}" method="POST">
-                                        <a href="{{ route('stock.edit',$stock->id) }}" class="btn btn-sm btn-primary mx-1 my-1">Edit</a>
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm mx-1 my-1" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="5">Data Tidak Ditemukan</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                    {{$stocks->links()}}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-stripped">
+                            <thead>
+                                <th>#</th>
+                                <th>Produk</th>
+                                <th>Stok</th>
+                                <th>Aksi</th>
+                            </thead>
+                            <tbody>
+                                @forelse($stocks as $stock)
+                                <tr>
+                                    <td scope="row">{{ $loop->iteration }}</td>
+                                    <td>{{$stock->product->nama}}</td>
+                                    <td>{{$stock->stok}}</td>
+                                    <td>
+                                        <form action="{{ route('stock.destroy',$stock->id) }}" method="POST">
+                                            <a href="{{ route('stock.edit',$stock->id) }}" class="btn btn-sm btn-primary mx-1 my-1">Edit</a>
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm mx-1 my-1" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5">Data Tidak Ditemukan</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        {{$stocks->links()}}
+                    </div>
                 </div>
             </div>
         </div>

@@ -3,7 +3,7 @@
 @section('main-content')
 <div class="content">
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-10">
             <div class="card shadow mb-4">
                 <div class="card-header">
                     <h4 class="m-0 font-weight-bold text-primary">Kurir</h4>
@@ -14,6 +14,7 @@
                 </div>
                 <div class="card-body">
                     @include('layouts.components.flash')
+                    <div class="table-responsive">
                     <table class="table table-bordered table-stripped">
                         <thead>
                             <tr>
@@ -50,6 +51,7 @@
                         </tbody>
                     </table>
                     {{$kurirs->links()}}
+                    </div>
                 </div>
             </div>
         </div>

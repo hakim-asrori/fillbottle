@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
     protected $fillable = [
+        'kode',
         'branch_id',
         'user_id',
         'kurir_id',
@@ -28,12 +29,51 @@ class Transaction extends Model
         ];
     }
 
-    public static function metode()
+    public function getStatusNameAttribute()
+    {
+        switch ($this->status) {
+            case '0':
+                return "Tunggu";
+                break;
+            case '1':
+                return "Proses";
+                break;
+            case '2':
+                return "Diantar";
+                break;
+            case '3':
+                return "Selesai";
+                break;
+            case '4':
+                return "Batal";
+                break;
+            default:
+                return "N/A";
+                break;
+        }
+    }
+
+    public static function metodes()
     {
         return [
             0 => 'Transfer',
             1 => 'COD',
         ];
+    }
+
+    public function getMetodeNameAttribute()
+    {
+        switch ($this->metode) {
+            case '0':
+                return "Transfer";
+                break;
+            case '1':
+                return "COD";
+                break;
+            default:
+                return "N/A";
+                break;
+        }
     }
 
     public function branch()

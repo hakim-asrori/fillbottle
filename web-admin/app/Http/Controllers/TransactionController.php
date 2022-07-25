@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\stockRequest;
 use App\Models\Branch;
+use App\Models\DetailTransactions;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\Transaction;
@@ -20,6 +21,8 @@ class TransactionController extends Controller
     {
         $this->data['bname'] = null;
         $this->data['bid'] = null;
+        $this->data['statuses'] = Transaction::statuses();
+        $this->data['metodes'] = Transaction::metodes();
     }
     /**
      * Display a listing of the resource.
@@ -74,7 +77,12 @@ class TransactionController extends Controller
      */
     public function show($id)
     {
-        return view('admin.transaction.show');
+        $items = DetailTransactions::where('transaction_id', $id)->with('product')->get();
+        $transaction = Transaction::findOrFail($id);
+        $this->data['transaction'] = $transaction;
+        $this->data['bid'] = $transaction->branch_id;
+        $this->data['items'] = $items;
+        return view('admin.transaction.show', $this->data);
     }
 
     /**
@@ -85,7 +93,12 @@ class TransactionController extends Controller
      */
     public function edit($id)
     {
-        //
+        $items = DetailTransactions::where('transaction_id', $id)->with('product')->get();
+        $transaction = Transaction::findOrFail($id);
+        $this->data['transaction'] = $transaction;
+        $this->data['bid'] = $transaction->branch_id;
+        $this->data['items'] = $items;
+        return view('admin.transaction.form', $this->data);
     }
 
     /**
@@ -95,9 +108,23 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StockRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        //
+        $params = $request->except('_token');
+        $transaction = Transaction::findOrFail($id);
+
+        if ($transaction->update($params)) {
+            Session::flash('success', 'Data Berhasil Disimpan');
+        } else {
+            Session::flash('error', 'Data Gagal Disimpan');
+        }
+
+        if (Auth::user()->level == 0) {
+            $bid = $transaction->branch_id;
+        } else {
+            $bid = Auth::user()->id;
+        }
+        return redirect('admin/transaction?id=' . $bid);
     }
 
     /**

@@ -124,7 +124,7 @@ class StockController extends Controller
     {
         $params = $request->except('_token');
         $stock = Stock::findOrFail($id);
-        $this->data['bid'] = $stock->branch_id;
+
         if ($stock->update($params)) {
             Session::flash('success', 'Data Berhasil Disimpan');
         } else {

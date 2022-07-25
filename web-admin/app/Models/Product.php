@@ -20,4 +20,8 @@ class Product extends Model
     {
         return $this->belongsTo('App\Models\Partner');
     }
+    public function detail()
+    {
+        return $this->hasMany('App\Models\DetailTransactions');
+    }
 }

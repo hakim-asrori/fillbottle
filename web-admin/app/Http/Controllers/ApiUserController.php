@@ -79,9 +79,9 @@ class ApiUserController extends Controller
         $params['password'] = Hash::make($request->password);
         $params['level'] = '3';
 
-        // if ($request->has('foto')) {
-        //     $params['foto'] = $this->simpanImage('customer', 'foto', $request->file('foto'), $params['kode']);
-        // }
+        if ($request->has('foto')) {
+            $params['foto'] = $this->simpanImage('customer', 'foto', $request->file('foto'), $params['kode']);
+        }
 
         $params['kode'] = time();
 
@@ -122,5 +122,136 @@ class ApiUserController extends Controller
 
         $filePath = $file->storeAs($folder, $fileName, 'public');
         return $filePath;
+    }
+
+    public function showCustomer($id): JsonResponse
+    {
+        $sql = User::with('customer')->where('id', $id)->get;
+        return response()->json($sql);
+    }
+    public function showKurir($id): JsonResponse
+    {
+        $sql = User::with('kurir')->where('id', $id)->get;
+        return response()->json($sql);
+    }
+
+    public function editCustomer(Request $request,$id): JsonResponse
+    {
+        $foto = false;
+        $pass = false;
+
+        $user = User::findOrFail($id);
+        $params = $request->except('_token');
+
+        $k = array('_token', 'alamat', 'kota', 'provinsi', 'kodepos', 'foto');
+        $u = array('_token', '_method', 'name', 'last_name', 'email', 'level', 'telp', 'password', 'kode');
+
+        if ($request->filled('password')) {
+            $pass = true;
+        } else {
+            array_push($k, 'password');
+        }
+        if ($request->has('foto')) {
+            $foto = true;
+        } else {
+            array_push($u, 'foto');
+        }
+
+        $params = $request->except($k);
+        $params2 = $request->except($u);
+
+        if ($pass) {
+            $params['password'] = Hash::make($request->password);
+        }
+        if ($foto) {
+            $params2['foto'] = $this->simpanImage('customer', 'foto', $request->file('foto'), $params['kode']);
+        }
+
+        $params['level'] = '3';
+
+        $saved = false;
+        $saved = DB::transaction(function () use ($user, $params, $params2) {
+            $user->update($params);
+            $customer = Customer::where('user_id', $user->id);
+            $customer->update($params2);
+            return true;
+        });
+
+        if ($saved) {
+            $sql = 'Berhasil';
+        } else {
+            $sql = 'Gagal';
+        }
+        return response()->json($sql);
+    }
+
+    public function editKurir(Request $request,$id): JsonResponse
+    {
+        $foto = false;
+        $ktp = false;
+        $sim = false;
+        $pass = false;
+
+        $user = User::findOrFail($id);
+        $params = $request->except('_token');
+
+        $k = array('_token', 'alamat', 'kota', 'provinsi', 'kodepos', 'foto', 'ktp', 'sim');
+        $u = array('_token', 'name', 'last_name', 'email', 'level', 'telp', 'branch_id', 'password');
+
+        if ($request->filled('password')) {
+            $pass = true;
+        } else {
+            array_push($k, 'password');
+        }
+        if ($request->has('foto')) {
+            $foto = true;
+        } else {
+            array_push($u, 'foto');
+        }
+        if ($request->has('ktp')) {
+            $ktp = true;
+        } else {
+            array_push($u, 'ktp');
+        }
+        if ($request->has('sim')) {
+            $sim = true;
+        } else {
+            array_push($u, 'sim');
+        }
+
+        $params = $request->except($k);
+        $params2 = $request->except($u);
+
+        if ($pass) {
+            $params['password'] = Hash::make($request->password);
+        }
+        if ($foto) {
+            $params2['foto'] = $this->simpanImage('kurir', 'foto', $request->file('foto'), $params['kode']);
+        }
+        if ($ktp) {
+            $params2['ktp'] = $this->simpanImage('kurir', 'ktp', $request->file('ktp'), $params['kode']);
+        }
+        if ($sim) {
+            $params2['sim'] = $this->simpanImage('kurir', 'sim', $request->file('sim'), $params['kode']);
+        }
+
+        $params['level'] = '2';
+
+        $saved = false;
+        $saved = DB::transaction(function () use ($user, $params, $params2) {
+            $bid = $params['branch_id'];
+            $user->update($params);
+            $user->branches()->sync($bid);
+            $kurir = Kurir::where('user_id', $user->id)->first();
+            $kurir->update($params2);
+            return true;
+        });
+
+        if ($saved) {
+            $sql = 'Berhasil';
+        } else {
+            $sql = 'Gagal';
+        }
+        return response()->json($sql);
     }
 }

@@ -79,9 +79,9 @@ class ApiUserController extends Controller
         $params['password'] = Hash::make($request->password);
         $params['level'] = '3';
 
-        if ($request->has('foto')) {
-            $params['foto'] = $this->simpanImage('customer', 'foto', $request->file('foto'), $params['kode']);
-        }
+        // if ($request->has('foto')) {
+        //     $params['foto'] = $this->simpanImage('customer', 'foto', $request->file('foto'), $params['kode']);
+        // }
 
         $params['kode'] = time();
 

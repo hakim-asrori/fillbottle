@@ -88,8 +88,8 @@ class ApiUserController extends Controller
         $saved = false;
         $saved = DB::transaction(function () use ($params) {
             $user = User::create($params);
-            // $params['user_id'] = $user->id;
-            // Customer::create($params);
+            $params['user_id'] = $user->id;
+            Customer::create($params);
             return true;
         });
 

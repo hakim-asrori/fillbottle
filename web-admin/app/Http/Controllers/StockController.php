@@ -19,6 +19,8 @@ class StockController extends Controller
     {
         $this->data['bname'] = null;
         $this->data['bid'] = null;
+
+        $this->data['q'] = null;
     }
     /**
      * Display a listing of the resource.
@@ -36,6 +38,12 @@ class StockController extends Controller
             $bid = User::join('user_branches', 'user_branches.user_id', 'users.id')->where('users.id', $id)->value('user_branches.branch_id');
             $stocks = Stock::where("branch_id", "=", $bid)->orderBy('product_id', 'ASC');
             $branch = Branch::where("id", '=', $bid)->value('nama');
+        }
+
+        if ($q = $request->query('q')) {
+            $stocks = $stocks->join('products', 'products.id', 'branch_stocks.product_id')
+                ->where('products.nama', 'like', '%' . $q . '%');
+            $this->data['q'] = $q;
         }
 
         $this->data['bname'] = $branch;

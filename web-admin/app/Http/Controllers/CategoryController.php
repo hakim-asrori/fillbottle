@@ -11,14 +11,22 @@ use Illuminate\Support\Facades\Session;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->data['q'] = null;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $categories = Category::orderBy('nama', 'ASC');
+        if ($q = $request->query('q')) {
+            $categories = $categories->where('nama','like','%'.$q.'%');
+            $this->data['q'] = $q;
+        }
         $this->data['categories'] = $categories->paginate(10);
         return view('admin.category.index', $this->data);
     }

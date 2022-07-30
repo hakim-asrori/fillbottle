@@ -8,7 +8,7 @@ $branch_name = $bname;
 @section('main-content')
 <div class="content">
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="card shadow mb-4">
                 <div class="card-header">
                     <h4 class="m-0 font-weight-bold text-primary">Stok Produk {{$branch_name}}</h4>

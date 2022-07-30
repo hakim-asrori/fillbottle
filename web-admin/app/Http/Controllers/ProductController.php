@@ -17,14 +17,22 @@ use Nette\Utils\DateTime;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->data['q'] = null;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $products = Product::orderBy('nama', 'ASC');
+        if ($q = $request->query('q')) {
+            $products = $products->where('nama','like','%'.$q.'%')->orWhere('kode','like','%'.$q.'%');
+            $this->data['q'] = $q;
+        }
         $this->data['products'] = $products->paginate(10);
         return view('admin.product.index', $this->data);
     }

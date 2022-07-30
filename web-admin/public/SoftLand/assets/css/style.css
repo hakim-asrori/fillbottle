@@ -141,7 +141,7 @@ section {
   justify-content: center;
 }
 .feature-1 .wrap-icon.icon-1 {
-  background: linear-gradient(-45deg, #3b87bd, #2d71a2);
+  background: linear-gradient(-45deg, rgb(245, 245, 245), white);
 }
 .feature-1 .wrap-icon i {
   font-size: 40px;
@@ -807,7 +807,7 @@ section {
   top: -50%;
   overflow: hidden;
   left: 0;
-  box-shadow: 0 15px 50px 0 rgba(0, 0, 0, 0.3);
+  /* box-shadow: 0 15px 50px 0 rgba(0, 0, 0, 0.3); */
   border-radius: 30px;
 }
 @media screen and (max-width: 992px) {

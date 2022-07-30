@@ -18,7 +18,8 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
         "laravelcollective/html": "^6.3",
-        "nwidart/laravel-modules": "^8.2"
+        "nwidart/laravel-modules": "^8.2",
+        "phpmailer/phpmailer": "^6.6"
     },
     "require-dev": {
         "spatie/laravel-ignition": "^1.0",

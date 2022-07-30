@@ -6,6 +6,7 @@ use App\Http\Requests\KurirRequest;
 use App\Models\Branch;
 use App\Models\Kurir;
 use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -15,17 +16,29 @@ use Nette\Utils\DateTime;
 
 class KurirController extends Controller
 {
+    public function __construct()
+    {
+        $this->data['q'] = null;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (Auth::user()->level == 0) {
             $users = User::with('kurir')->where('level', '2')->orderBy('name', 'ASC');
         } else {
-            $users = User::join('user_branches', 'user_branches.user_id', 'users.id')->where('users.level', '2')->orderBy('users.name', 'ASC');
+            // $users = User::with('kurir')->where('level', '2')->orderBy('users.name', 'ASC');
+            $users = User::select(DB::raw('users.*,kurirs.ktp, kurirs.sim, kurirs.foto, kurirs.status, kurirs.alamat, kurirs.kota, kurirs.provinsi, kurirs.kodepos'))
+            ->join('kurirs', 'kurirs.user_id', 'users.id')
+            ->join('user_branches','user_branches.user_id','users.id')
+            ->where('users.level','2')->orderBy('users.name', 'ASC');
+        }
+        if ($q = $request->query('q')) {
+            $users = $users->where('name','like','%'.$q.'%');
+            $this->data['q'] = $q;
         }
         $this->data['kurirs'] = $users->paginate(10);
         return view('admin.kurir.index', $this->data);

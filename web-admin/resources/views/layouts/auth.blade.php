@@ -18,9 +18,10 @@
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
 
     <!-- Favicon -->
-    <link href="{{ asset('img/favicon.png') }}" rel="icon" type="image/png">
+    <link href="{{asset('img/logo3.png')}}" rel="icon">
+    <!-- <link href="{{ asset('img/logo4.png') }}" rel="icon" type="image/png"> -->
 </head>
-<body class="bg-gradient-primary min-vh-100 d-flex justify-content-center align-items-center">
+<body class="bg-gradient-login min-vh-100 d-flex justify-content-center align-items-center">
 
 @yield('main-content')
 

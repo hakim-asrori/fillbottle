@@ -22,8 +22,8 @@
                         <p data-aos="fade-right" data-aos-delay="200" data-aos-offset="-500"><a href="#" class="btn btn-outline-white">Download App</a></p>
                     </div>
                     <div class="col-lg-4 iphone-wrap">
-                        <img src="{{asset('SoftLand/assets/img/phone_1.png')}}" alt="Image" class="phone-1" data-aos="fade-right">
-                        <img src="{{asset('SoftLand/assets/img/phone_2.png')}}" alt="Image" class="phone-2" data-aos="fade-right" data-aos-delay="200">
+                        <!-- <img src="{{asset('img/img1.png')}}" alt="Image" class="phone-1" data-aos="fade-right"> -->
+                        <img src="{{asset('img/img2.png')}}" alt="Image" class="phone-2" data-aos="fade-right" data-aos-delay="200">
                     </div>
                 </div>
             </div>

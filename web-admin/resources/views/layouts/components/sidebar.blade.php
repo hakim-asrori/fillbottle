@@ -2,8 +2,8 @@
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+        <div class="sidebar-brand-icon">
+            <img src="{{asset('img/logo2.png')}}" style="height: 40px;" alt="Image">
         </div>
         <div class="sidebar-brand-text mx-3">FillBottle</div>
     </a>

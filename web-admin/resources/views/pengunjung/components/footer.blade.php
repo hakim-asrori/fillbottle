@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-4 mb-4 mb-md-0">
                 <h3>Tentang FillBottle</h3>
-                <p>FillBottle adalah sebuah platform berbasis android yang menyediakan pelayanan ini ulang untuk produk kemasan plastik.</p>
+                <p>FillBottle adalah aplikasi yang dibuat untuk mengurangi produksi plastik yang terus melonjak dengan menyediakan berbagai kebutuhan rumah tangga dan mengisi ulang botol yang anda punya.</p>
                 <p class="social">
                     <a href="#"><span class="bi bi-twitter"></span></a>
                     <a href="#"><span class="bi bi-facebook"></span></a>

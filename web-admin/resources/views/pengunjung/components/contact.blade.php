@@ -26,8 +26,9 @@
             </div>
 
             <div class="col-md-6 mb-5 mb-md-0" data-aos="fade-up">
-                <form action="forms/contact.php" method="post" role="form" class="php-email-form">
-
+            @include('layouts.components.flash')
+                <form action="#" method="post" role="form" class="php-email-form">
+                {{csrf_field()}}
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <label for="name">Name</label>

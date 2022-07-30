@@ -2,7 +2,8 @@
 
 @section('main-content')
 @php
-$formTitle = !empty($branch)?'Edit':'Tambah'
+$formTitle = !empty($branch)?'Edit':'Tambah';
+$foto = !empty($branch)? $branch->foto : "";
 @endphp
 <div class="content">
     <div class="row">
@@ -12,12 +13,39 @@ $formTitle = !empty($branch)?'Edit':'Tambah'
                     <h4 class="m-0 font-weight-bold text-primary">{{$formTitle}} Cabang</h4>
                 </div>
                 <div class="card-body">
+                @include('layouts.components.flash')
                     @if(!empty($branch))
-                    {!! Form::model($branch, ['url' => ['admin/branch',$branch->id],'method' =>'PUT'])!!}
+                    {!! Form::model($branch, ['url' => ['admin/branch',$branch->id],'method' =>'PUT','enctype' => 'multipart/form-data'])!!}
                     {!! Form::hidden('id')!!}
                     @else
-                    {!! Form::open(['url' => 'admin/branch','method' => 'POST'])!!}
+                    {!! Form::open(['url' => 'admin/branch','method' => 'POST','enctype' => 'multipart/form-data'])!!}
                     @endif
+                    <h6 class="heading-small text-muted mb-4">Foto Cabang</h6>
+                    <div class="pl-lg-4">
+                        <div class="card card-default mb-4">
+                            <div class="card-background-image mt-4">
+                                <div id="preview-product">
+                                    @if($foto!="")
+                                    <img src="{{ asset('storage/'.$foto) }}" width="280" height="180" />
+                                    @endif
+
+                                </div>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            {!! Form::file('foto', ['class' => 'form-control preview-image', 'placeholder' => 'Foto Cabang']) !!}
+                                            @error('foto')
+                                            <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <h6 class="heading-small text-muted mb-4">Informasi Cabang</h6>
 
                     <div class="pl-lg-4">

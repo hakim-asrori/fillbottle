@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserRequest;
 use App\Models\Branch;
 use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -14,15 +15,22 @@ class UserController extends Controller
     public function __construct()
     {
         $this->data['levels'] = User::levels();
+        $this->data['q'] = null;
     }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::where('level', '0')->orWhere('level', '1')->orderBy('name', 'ASC');
+        $users = User::orderBy('name', 'ASC');
+        if ($q = $request->query('q')) {
+            $users = $users->whereRaw("name like '%?%' && (level = '1' || level = '0')",[$q]);
+            $this->data['q'] = $q;
+        }else{
+            $users = User::where('level', '0')->orWhere('level', '1')->orderBy('name', 'ASC');
+        }
         $this->data['users'] = $users->paginate(10);
         return view('admin.user.index', $this->data);
     }

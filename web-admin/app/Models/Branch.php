@@ -9,7 +9,7 @@ class Branch extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama', 'pimpinan', 'alamat', 'kota', 'provinsi', 'kodepos', 'email', 'telp'];
+    protected $fillable = ['nama', 'pimpinan', 'alamat', 'kota', 'foto', 'provinsi', 'kodepos', 'email', 'telp'];
 
     public function getAlamatLengkapAttribute()
     {

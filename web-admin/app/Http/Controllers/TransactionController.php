@@ -23,6 +23,8 @@ class TransactionController extends Controller
         $this->data['bid'] = null;
         $this->data['statuses'] = Transaction::statuses();
         $this->data['metodes'] = Transaction::metodes();
+
+        $this->data['q'] = null;
     }
     /**
      * Display a listing of the resource.
@@ -40,6 +42,12 @@ class TransactionController extends Controller
             $bid = User::join('user_branches', 'user_branches.user_id', 'users.id')->where('users.id', $id)->value('user_branches.branch_id');
             $transactions = Transaction::where("branch_id", "=", $bid)->orderBy('id', 'ASC');
             $branch = Branch::where("id", '=', $bid)->value('nama');
+        }
+
+        if ($q = $request->query('q')) {
+            $transactions = $transactions->where('nama', 'like', '%' . $q . '%')
+                ->orWhere('kode', 'like', '%' . $q . '%');
+            $this->data['q'] = $q;
         }
 
         $this->data['bname'] = $branch;

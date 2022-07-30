@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PartnerRequest;
 use App\Models\Partner;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Nette\Utils\DateTime;
@@ -12,14 +13,22 @@ use Illuminate\Support\Str;
 
 class PartnerController extends Controller
 {
+    public function __construct()
+    {
+        $this->data['q'] = null;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $partners = Partner::orderBy('nama', 'ASC');
+        if ($q = $request->query('q')) {
+            $partners = $partners->where('nama','like','%'.$q.'%');
+            $this->data['q'] = $q;
+        }
         $this->data['partners'] = $partners->paginate(10);
         return view('admin.partner.index', $this->data);
     }

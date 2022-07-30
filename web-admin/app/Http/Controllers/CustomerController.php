@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
 use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -14,14 +15,22 @@ use Nette\Utils\DateTime;
 
 class CustomerController extends Controller
 {
+    public function __construct()
+    {
+        $this->data['q'] = null;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $customers = User::with('customer')->where('level', '3')->orderBy('name', 'ASC');
+        if ($q = $request->query('q')) {
+            $customers = $customers->where('name','like','%'.$q.'%');
+            $this->data['q'] = $q;
+        }
         $this->data['customers'] = $customers->paginate(10);
         return view('admin.customer.index', $this->data);
     }

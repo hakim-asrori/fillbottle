@@ -3,10 +3,10 @@
 @section('main-content')
 <div class="content">
     <div class="row">
-        <div class="col-lg-10">
+        <div class="col-lg-12">
             <div class="card shadow mb-4">
                 <div class="card-header">
-                    <h4 class="m-0 font-weight-bold text-primary">Kurir</h4>
+                    <h4 class="m-0 font-weight-bold text-primary">Kurir {{$kurirs}}</h4>
                 </div>
                 <div class="container text-right">
                     <a href="{{ route('kurir.create') }}" class="btn btn-primary mt-3">Tambah Data</a>

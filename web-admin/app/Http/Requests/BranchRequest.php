@@ -27,9 +27,11 @@ class BranchRequest extends FormRequest
         if ($this->method() == 'PUT') {
             $email = 'required|unique:branches,email,' . $id;
             $telp = 'required|unique:branches,telp,' . $id;
+            $foto = 'image|mimes:jpeg,png,jpg,gif|max:4096';
         } else {
             $email = 'required|unique:branches,email,NULL';
             $telp = 'required|unique:branches,telp,NULL';
+            $foto = 'required|image|mimes:jpeg,png,jpg,gif|max:4096';
         }
         return [
             'nama' => 'required',
@@ -39,7 +41,8 @@ class BranchRequest extends FormRequest
             'provinsi' => 'required',
             'kodepos' => 'required',
             'email' => $email,
-            'telp' => $telp
+            'telp' => $telp,
+            'foto' => $foto
         ];
     }
 }

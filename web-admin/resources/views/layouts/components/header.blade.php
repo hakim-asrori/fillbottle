@@ -6,11 +6,52 @@
     </button>
 
     <!-- Topbar Search -->
-    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+    @php
+    $name = Route::currentRouteName();
+    $name = substr($name, 0, strrpos($name, '.'));
+    $url = $_SERVER['REQUEST_URI'];
+    $url = substr($name, strpos($name, "?") + 1); 
+    $level = Auth::user()->level;
+
+    switch ($name) {
+    case 'category':
+    $route = route('category.index');
+    break;
+    case 'branch':
+    $route = route('branch.index');
+    break;
+    case 'partner':
+    $route = route('partner.index');
+    break;
+    case 'product':
+    $route = route('product.index');
+    break;
+    case 'user':
+    $route = route('user.index');
+    break;
+    case 'kurir':
+    $route = route('kurir.index',);
+    break;
+    case 'customer':
+    $route = route('customer.index');
+    break;
+    case 'stock':
+    $route = route('stock.index',array('id' => Auth::user()->id));
+    break;
+    case 'transaction':
+    $route = route('transaction.index',array('id' => Auth::user()->id));
+    break;
+    default:
+    $route = null;
+    break;
+    }
+    @endphp
+
+    <form action="{{$route}}" method="GET" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
         <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+            <input type="text" name="q" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
             <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
+                <button class="btn btn-primary" type="submit">
                     <i class="fas fa-search fa-sm"></i>
                 </button>
             </div>

@@ -65,5 +65,7 @@ Route::group(
         Route::post('/login', 'ApiUserController@login');
         Route::post('/kurir', 'ApiUserController@kurir');
         Route::post('/customer', 'ApiUserController@customer');
+        Route::get('/branch', 'ApiBranchController@showAllBranch');
+        Route::get('/productBranch/{id}', 'ApiBranchController@showProductbyBranch');
     }
 );

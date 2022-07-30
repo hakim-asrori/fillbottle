@@ -31,7 +31,7 @@
                                     <td scope="row">{{ $loop->iteration }}</td>
                                     <td>{{ $customer->full_name }}</td>
                                     <td>Telp : {{$customer->telp}}</br>Email : {{$customer->email}}</td>
-                                    <td>{{ $customer->alamat_customer }}</td>
+                                    <td>{{ $customer->alamat_customer == null ? "Belum melakukan pengisian data" : $customer->alamat_customer }}</td>
                                     <td>
                                         <div class="d-flex">
                                             <a href="{{ route('customer.edit', $customer->id) }}" class="btn btn-sm btn-primary mx-1 my-1">Edit</a>

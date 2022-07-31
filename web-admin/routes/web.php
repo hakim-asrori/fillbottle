@@ -78,3 +78,5 @@ Route::group(
         Route::post('/editCustomer/{id}', 'ApiUserController@editCustomer');
     }
 );
+
+Route::post('/send-message','ContactController@sendEmail')->name('contact.send');

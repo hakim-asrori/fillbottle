@@ -79,9 +79,9 @@ class ApiUserController extends Controller
         $params['password'] = Hash::make($request->password);
         $params['level'] = '3';
 
-        if ($request->has('foto')) {
-            $params['foto'] = $this->simpanImage('customer', 'foto', $request->file('foto'), $params['kode']);
-        }
+        // if ($request->has('foto')) {
+        //     $params['foto'] = $this->simpanImage('customer', 'foto', $request->file('foto'), $params['kode']);
+        // }
 
         $params['kode'] = time();
 
@@ -126,12 +126,12 @@ class ApiUserController extends Controller
 
     public function showCustomer($id): JsonResponse
     {
-        $sql = User::with('customer')->where('id', $id)->get;
+        $sql = User::with('customer')->where('id', $id)->first();
         return response()->json($sql);
     }
     public function showKurir($id): JsonResponse
     {
-        $sql = User::with('kurir')->where('id', $id)->get;
+        $sql = User::with('kurir')->where('id', $id)->first();
         return response()->json($sql);
     }
 

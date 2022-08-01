@@ -126,12 +126,12 @@ class ApiUserController extends Controller
 
     public function showCustomer($id): JsonResponse
     {
-        $sql = User::with('customer')->where('id', $id)->get;
+        $sql = User::with('customer')->where('id', $id)->get();
         return response()->json($sql);
     }
     public function showKurir($id): JsonResponse
     {
-        $sql = User::with('kurir')->where('id', $id)->get;
+        $sql = User::with('kurir')->where('id', $id)->get();
         return response()->json($sql);
     }
 

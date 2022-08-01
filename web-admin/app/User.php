@@ -71,20 +71,12 @@ class User extends Authenticatable
 
     public function getAlamatKurirAttribute()
     {
-        $alamat = $this->kurir->alamat != null ? $this->kurir->alamat : '';
-        $kota = $this->kurir->kota != null ? $this->kurir->kota : '';
-        $provinsi = $this->kurir->provinsi != null ? $this->kurir->kota : '';
-        $kodepos = $this->kurir->kodepos != null ? $this->kurir->kota : '';
-        return "{$alamat}, {$kota}, {$provinsi}, {$kodepos}";
+        return "{$this->kurir->alamat}, {$this->kurir->kota}, {$this->kurir->provinsi}, {$this->kurir->kodepos}";
     }
 
     public function getAlamatCustomerAttribute()
     {
-        $alamat = $this->customer->alamat != null ? $this->customer->alamat : '';
-        $kota = $this->customer->kota != null ? $this->customer->kota : '';
-        $provinsi = $this->customer->provinsi != null ? $this->customer->kota : '';
-        $kodepos = $this->customer->kodepos != null ? $this->customer->kota : '';
-        return "{$alamat}, {$kota}, {$provinsi}, {$kodepos}";
+        return "{$this->customer->alamat}, {$this->customer->kota}, {$this->customer->provinsi}, {$this->customer->kodepos}";
     }
 
     public function getLevelNameAttribute()

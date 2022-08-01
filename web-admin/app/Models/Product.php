@@ -24,4 +24,7 @@ class Product extends Model
     {
         return $this->hasMany('App\Models\DetailTransactions');
     }
+    public function categoryProducts(){
+        return $this->hasMany('App\Models\ProductCategories');
+    }
 }

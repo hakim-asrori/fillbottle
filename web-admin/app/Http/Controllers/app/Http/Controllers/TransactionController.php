@@ -35,12 +35,12 @@ class TransactionController extends Controller
     {
         $id = $request->query('id');
         if (Auth::user()->level == 0) {
-            $transactions = Transaction::with('users')->where("branch_id", "=", $id)->orderBy('id', 'ASC');
+            $transactions = Transaction::with('user')->where("branch_id", "=", $id)->orderBy('id', 'ASC');
             $branch = Branch::where("id", '=', $id)->value('nama');
             $bid = $id;
         } else {
             $bid = User::join('user_branches', 'user_branches.user_id', 'users.id')->where('users.id', $id)->value('user_branches.branch_id');
-            $transactions = Transaction::with('users')->where("branch_id", "=", $bid)->orderBy('id', 'ASC');
+            $transactions = Transaction::with('user')->where("branch_id", "=", $bid)->orderBy('id', 'ASC');
             $branch = Branch::where("id", '=', $bid)->value('nama');
         }
 

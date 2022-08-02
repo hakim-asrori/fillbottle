@@ -17,10 +17,10 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->string('foto')->nullable();
-            $table->string('alamat');
-            $table->string('kota');
-            $table->string('provinsi');
-            $table->string('kodepos');
+            $table->string('alamat')->nullable();
+            $table->string('kota')->nullable();
+            $table->string('provinsi')->nullable();
+            $table->string('kodepos')->nullable();
             $table->timestamps();
             
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

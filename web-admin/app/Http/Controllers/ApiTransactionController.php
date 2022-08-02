@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Mail\ContactMail;
 use App\Models\DetailTransactions;
-use App\Models\Keranjang;
 use App\Models\Transaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,13 +16,13 @@ class ApiTransactionController extends Controller
 {
     public function showTransaction($id): JsonResponse
     {
-        $sql = Transaction::where('user_id', $id)->get();
+        $sql = Transaction::with('user')->where('user_id', $id)->get();
         return response()->json($sql);
     }
 
     public function showDetailTransaction($id): JsonResponse
     {
-        $sql = DetailTransactions::where('transaction_id', $id)->get();
+        $sql = DetailTransactions::with('product')->where('transaction_id', $id)->get();
         return response()->json($sql);
     }
     public function saveTransaction(Request $request)

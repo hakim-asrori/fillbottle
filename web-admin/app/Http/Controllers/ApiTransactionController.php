@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Mail;
+use Nette\Utils\DateTime;
 
 class ApiTransactionController extends Controller
 {
@@ -27,18 +28,37 @@ class ApiTransactionController extends Controller
     }
     public function saveTransaction(Request $request)
     {
+
         $params = $request->except('_token');
         $saved = false;
+
         $saved = DB::transaction(function () use ($params) {
-            $transaction = Transaction::create($params);
-            $transaction->detail()->sync($params['transaction_id']);
+            $dt = new DateTime();
+            $transaction = Transaction::create([
+                'kode' => time(),
+                'user_id' => $params['userid'],
+                'branch_id' => 1,
+                'kurir_id' => 1,
+                'tanggal' => $dt->format('Y-m-d'),
+                'total' => $params['total'],
+                'metode' => $params['metode'],
+                'status' => '0',
+            ]);
+            $keranjang = $params['listkeranjang'];
+            foreach($keranjang as $k){
+                $detail = DetailTransactions::creare([
+                    'transaction_id' => $transaction->id,
+                    'product_id' => $k->idproduct,
+                    'jumlah' => $k->jumlah
+                ]);
+            }
             $details = [
                 'name' => $params['nama'],
                 'email' => null,
                 'subject' => "Permintaan Transaksi",
-                'msg' => $params['nama'].'telah melakukan pembelian',
+                'msg' => $params['nama'] . 'telah melakukan pembelian',
             ];
-    
+
             Mail::to('fillbottleproject@gmail.com')->send(new ContactMail($details));
             return true;
         });

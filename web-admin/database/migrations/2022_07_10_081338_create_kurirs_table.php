@@ -18,7 +18,7 @@ class CreateKurirsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('ktp');
             $table->string('sim');
-            $table->string('foto');
+            $table->string('foto')->nullable();
             $table->string('alamat');
             $table->string('kota');
             $table->string('provinsi');

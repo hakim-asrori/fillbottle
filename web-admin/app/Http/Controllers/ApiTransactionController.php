@@ -16,13 +16,13 @@ class ApiTransactionController extends Controller
 {
     public function showTransaction($id): JsonResponse
     {
-        $sql = Transaction::where('user_id', $id);
+        $sql = Transaction::where('user_id', $id)->get();
         return response()->json($sql);
     }
 
     public function showDetailTransaction($id): JsonResponse
     {
-        $sql = DetailTransactions::where('transaction_id', $id);
+        $sql = DetailTransactions::where('transaction_id', $id)->get();
         return response()->json($sql);
     }
     public function saveTransaction(Request $request)

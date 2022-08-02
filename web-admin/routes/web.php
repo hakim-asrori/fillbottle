@@ -67,15 +67,13 @@ Route::group(
         Route::post('/customer', 'ApiUserController@customer');
         Route::get('/branch', 'ApiBranchController@showAllBranch');
         Route::get('/productBranch/{id}', 'ApiBranchController@showProductbyBranch');
-        Route::get('/showKeranjang/{id}', 'ApiKeranjangController@showKeranjang');
-        Route::get('/tambahJumlah/{id}', 'ApiKeranjangController@tambahJumlah');
-        Route::get('/kurangJumlah/{id}', 'ApiKeranjangController@kurangJumlah');
-        Route::post('/simpanKeranjang', 'ApiKeranjangController@simpanKeranjang');
-        Route::get('/deleteKeranjang/{id}', 'ApiKeranjangController@deleteKeranjang');
         Route::get('/showKurir/{id}', 'ApiUserController@showKurir');
         Route::get('/showCustomer/{id}', 'ApiUserController@showCustomer');
         Route::post('/editKurir/{id}', 'ApiUserController@editKurir');
         Route::post('/editCustomer/{id}', 'ApiUserController@editCustomer');
+        Route::post('/saveTransaction','ApiTransactionController@saveTransaction');
+        Route::get('/showTransaction/{id}','ApiTransactionController@showTransaction');
+        Route::get('/showDetailTransaction/{id}','ApiTransactionController@showDetailTransaction');
     }
 );
 

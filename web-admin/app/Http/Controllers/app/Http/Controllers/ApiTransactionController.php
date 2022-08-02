@@ -44,19 +44,19 @@ class ApiTransactionController extends Controller
                 'metode' => $params['metode'],
                 'status' => '0',
             ]);
-            $keranjang = $params['listkeranjang'];
+            $keranjang = json_decode($params['listkeranjang']);
             foreach($keranjang as $k){
-                $detail = DetailTransactions::creare([
+                $detail = DetailTransactions::create([
                     'transaction_id' => $transaction->id,
-                    'product_id' => $k->idproduct,
+                    'product_id' => $k->idproduk,
                     'jumlah' => $k->jumlah
                 ]);
             }
             $details = [
-                'name' => $params['nama'],
+                'name' => 'FillBottle',
                 'email' => null,
                 'subject' => "Permintaan Transaksi",
-                'msg' => $params['nama'] . 'telah melakukan pembelian',
+                'msg' => 'Seorang user telah melakukan pembelian',
             ];
 
             Mail::to('fillbottleproject@gmail.com')->send(new ContactMail($details));

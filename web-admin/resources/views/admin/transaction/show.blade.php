@@ -21,7 +21,7 @@ $branch_id = $bid;
                                 </tr>
                                 <tr>
                                     <td>Nama Pemesan</td>
-                                    <td>{{$transaction->nama}}</td>
+                                    <td>{{$transaction->user->name .' '. $transaction->user->last_name}}</td>
                                 </tr>
                                 <tr>
                                     <td>Tanggal Pemesanan</td>

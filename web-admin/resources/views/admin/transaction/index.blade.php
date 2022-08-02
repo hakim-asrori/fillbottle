@@ -34,7 +34,7 @@ $branch_name = $bname;
                                 <tr>
                                     <td scope="row">{{ $loop->iteration }}</td>
                                     <td>{{$transaction->kode}}</td>
-                                    <td>{{$transaction->nama}}</td>
+                                    <td>{{$transaction->user->name .' '. $transaction->user->last_name}}</td>
                                     <td>{{$transaction->tanggal}}</td>
                                     <td>{{$transaction->total}}</td>
                                     <td>{{$transaction->status_name}}</td>

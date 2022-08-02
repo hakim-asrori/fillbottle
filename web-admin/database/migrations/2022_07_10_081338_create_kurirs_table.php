@@ -16,13 +16,13 @@ class CreateKurirsTable extends Migration
         Schema::create('kurirs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
-            $table->string('ktp');
-            $table->string('sim');
-            $table->string('foto');
-            $table->string('alamat');
-            $table->string('kota');
-            $table->string('provinsi');
-            $table->string('kodepos');
+            $table->string('ktp')->nullable();;
+            $table->string('sim')->nullable();;
+            $table->string('foto')->nullable();
+            $table->string('alamat')->nullable();;
+            $table->string('kota')->nullable();;
+            $table->string('provinsi')->nullable();;
+            $table->string('kodepos')->nullable();;
             $table->char('status',1)->nullable();
             $table->timestamps();
 

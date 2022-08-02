@@ -12,7 +12,7 @@ class ApiBranchController extends Controller
 {
     public function showAllBranch(): JsonResponse
     {
-        $sql = Branch::orderBy('nama', 'ASC');
+        $sql = Branch::orderBy('nama', 'ASC')->get();
         return response()->json($sql);
     }
 

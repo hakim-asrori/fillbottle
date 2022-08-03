@@ -19,7 +19,7 @@
                     <div class="col-lg-8 text-center text-lg-start">
                         <h1 data-aos="fade-right">Kurangi Sampah Plastik Bersama FillBot<a style="color: white;" href="{{ route('login') }}">t</a>le</h1>
                         <p class="mb-5" data-aos="fade-right" data-aos-delay="100">Kami ingin membantu masyarakat dalam mengurangi sampah plastik dengan menyediakan platform isi ulang produk kemasan plastik</p>
-                        <p data-aos="fade-right" data-aos-delay="200" data-aos-offset="-500"><a href="#" class="btn btn-outline-white">Download App</a></p>
+                        <p data-aos="fade-right" data-aos-delay="200" data-aos-offset="-500"><a href="#download" class="btn btn-outline-white">Download App</a></p>
                     </div>
                     <div class="col-lg-4 iphone-wrap">
                         <!-- <img src="{{asset('img/img1.png')}}" alt="Image" class="phone-1" data-aos="fade-right"> -->

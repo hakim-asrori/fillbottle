@@ -58,7 +58,7 @@
                         <h2>Download aplikasi FillBottle sekarang</h2>
                     </div>
                     <div class="col-md-5 text-center text-md-end">
-                        <p><a href="https://drive.google.com/file/d/15_ZOQN4-QvzFL2FpEhThBDIe6Z6rgExq/view?usp=sharing" class="btn d-inline-flex align-items-center"><i class="bx bxl-apple"></i><span>App store</span></a> <a href="https://drive.google.com/file/d/15_ZOQN4-QvzFL2FpEhThBDIe6Z6rgExq/view?usp=sharing" class="btn d-inline-flex align-items-center"><i class="bx bxl-play-store"></i><span>Google play</span></a></p>
+                        <p><a href="https://drive.google.com/drive/folders/1eaPT43oTt4b4ke_kVQZEWJWDCd_w5eia?usp=sharing" class="btn d-inline-flex align-items-center"><i class="bx bxl-apple"></i><span>App store</span></a> <a href="https://drive.google.com/drive/folders/1eaPT43oTt4b4ke_kVQZEWJWDCd_w5eia?usp=sharing" class="btn d-inline-flex align-items-center"><i class="bx bxl-play-store"></i><span>Google play</span></a></p>
                     </div>
                 </div>
             </div>
